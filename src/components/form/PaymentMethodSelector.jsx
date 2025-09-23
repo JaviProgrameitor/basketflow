@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { useNavigate } from 'react-router';
-import { createPayment } from '../../../../App - copia/src/api/payment';
 import { createLicense } from '../../api/license';
 import { useVisitorData } from '@fingerprintjs/fingerprintjs-pro-react';
 

@@ -29,10 +29,9 @@ export async function hasAccessToApp({ visitorId }) {
   try {
     // 1) Validar usuario
     let authToken = getStoredAuthToken();
-    console.log('Validando usuario con token:', authToken);
     if (!authToken) {
       clearTokens();
-      console.log('Validación de usuario fallida: no-session');
+      // console.log('Validación de usuario fallida: no-session');
       return { ok: false, error: 'no-session' };
     }
 

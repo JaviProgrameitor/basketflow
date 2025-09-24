@@ -5,8 +5,10 @@ import Input from './Input.jsx';
 import Spinner from '../common/Spinner.jsx';
 import { useVisitorData } from '@fingerprintjs/fingerprintjs-pro-react';
 import { registerUser } from "../../helpers/auth.js";
+import { useAccess } from "../../context/AccessProvider.jsx";
 
-const RegisterUserForm = ({setError}) => {
+const RegisterUserForm = ({ setError }) => {
+  const { setAuthTokenAndRevalidate } = useAccess();
   const { isLoading: fpLoading, error: fpError, getData } = useVisitorData(
     { ignoreCache: true },
     { immediate: false }
@@ -32,7 +34,8 @@ const RegisterUserForm = ({setError}) => {
     try {
       const { requestId, visitorId } = await getData();
       // Llamada a la función de registro de usuario en el proceso principal
-      await registerUser(email, password, username, { requestId, visitorId });
+      const { token } = await registerUser(email, password, username, { requestId, visitorId });
+      await setAuthTokenAndRevalidate(token);
       setIsLoading(false);
       navigate('/pay-license');
     } catch (error) {
@@ -52,7 +55,7 @@ const RegisterUserForm = ({setError}) => {
           type="text"
           value={username}
           setValue={setUsername}
-          
+
           placeholder="Tu nombre de usuario"
         />
 

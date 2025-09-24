@@ -21,6 +21,7 @@ async function registerUser(email, password, username, fingerprintData) {
     const { user, token } = await register({email, password, username, deviceId});
     localStorage.setItem('authToken', token);
     localStorage.setItem('user', JSON.stringify(user));
+    return { user, token };
   } catch (error) {
     console.error('Error registering user:', error);
     throw error;

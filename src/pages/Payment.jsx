@@ -4,12 +4,14 @@ import { logoutHelper } from '../helpers/user.js'
 import { useNavigate, Link } from 'react-router';
 
 import { FaArrowCircleLeft } from "react-icons/fa";
+import { useAccess } from '../context/AccessProvider.jsx';
 
 const Payment = () => {
   const navigate = useNavigate();
+  const { logout } = useAccess();
   
   const handleLogout = () => {
-    logoutHelper();
+    logout();
     navigate('/login');
   };
 

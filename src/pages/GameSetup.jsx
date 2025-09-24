@@ -31,7 +31,7 @@ const GameSetup = () => {
     e.preventDefault();
     const password_crew_chief= dataForm.password_crew_chief
     const matchData = {
-      ...match,
+      id: match.id,
       ...dataForm,
       password_crew_chief,
       status: 'playing'

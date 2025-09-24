@@ -2,6 +2,7 @@
 import React from "react";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router";
+import Logo from "../../assets/logo.png";
 
 const HeaderView = ({title, children, back = false}) => {
   return (
@@ -13,6 +14,9 @@ const HeaderView = ({title, children, back = false}) => {
               <FaArrowCircleLeft className="w-6 h-6" />
             </Link>
           )}
+          <Link to="/">
+            <img src={Logo} alt="Logo" className="h-10 w-10 object-contain" />
+          </Link>
           <h3 className="text-2xl font-bold text-gray-800">{title}</h3>
         </div>
         <div className="flex space-x-4">

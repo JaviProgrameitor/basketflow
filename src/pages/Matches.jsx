@@ -109,7 +109,7 @@ const Matches = () => {
 
   const handleEditMatch = async (match) => {
     const matchToEdit = {
-      ...modalState.currentData,
+      id: modalState.currentMatch.id,
       ...match
     };
 

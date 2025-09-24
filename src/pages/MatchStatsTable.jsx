@@ -7,16 +7,17 @@ import 'dayjs/locale/es'; // Importar el locale español si es necesario
 
 import HeaderView from "../components/ui/HeaderView.jsx";
 import MainMatchStatsTable from "../components/ui/MainMatchStatsTable.jsx";
-import { getMatchById } from "../api/match.js";
-import { getFolderById } from "../api/folder.js";
 import { getStatsByMatch } from "../api/stats.js";
 import { generateOfficialGameReport, getStatsMatchForReportByMatchId } from "../api/reports.js";
 import { getMatchPlayers } from "../api/matchPlayers.js";
 import { getDeletedMatchEventsByMatchId, getMatchEventsByMatchId } from "../api/matchEvents.js";
+import Spinner from "../components/common/Spinner.jsx";
+import { toast, Toaster } from "sonner";
 
 function MatchStatsTable() {
   const { match_id, folder_id } = useParams();
 
+  const [isLoadingCustom, setIsLoadingCustom] = useState(false);
   const [matchStats, setMatchStats] = useState([]);
 
   const [sortBy, setSortBy] = useState('points');
@@ -84,6 +85,7 @@ function MatchStatsTable() {
   }
 
   const handleGenerateOfficialGameReport = async () => {
+    setIsLoadingCustom(true);
     try {
       let [dataMatch, players, matchEvents, deletedMatchEvents] = await Promise.all([
         getStatsMatchForReportByMatchId(match_id),
@@ -113,14 +115,19 @@ function MatchStatsTable() {
       const blobPdf = new Blob([pdf.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blobPdf);
       const a = document.createElement('a');
-      a.download = `${'planilla_basquet'}.pdf`;
+      a.download = `${dataMatch.home_team_name} vs ${dataMatch.away_team_name}.pdf`;
       a.href = url;
       document.body.appendChild(a);
       a.click();
       a.remove();
       window.URL.revokeObjectURL(url);
+      setIsLoadingCustom(false);
     } catch (error) {
+      setIsLoadingCustom(false);
       console.error("Error generando el PDF:", error);
+      toast.error('Error generando el PDF', {
+        duration: 3000,
+      });
     }
   }
 
@@ -130,19 +137,28 @@ function MatchStatsTable() {
 
   return (
     <div className="h-screen overflow-x-hidden">
+      <Toaster position="top-center" richColors />
       {/* Header */}
       <HeaderView title="Estadísticas del Partido" back={`/matches/${folder_id}`}>
         <button
           onClick={handleGenerateOfficialGameReport}
           className="flex items-center button text-white bg-green-600 hover:bg-green-700 focus:ring-green-500"
         >
-          Generar Reporte PDF
+          {isLoadingCustom ? (
+            <>
+              <Spinner />
+              Generando...
+            </>
+          ) : (
+            'Generar Reporte'
+          )}
+          
         </button>
         <Link
           to={`/match-events-timeline/${match_id}/${folder_id}`}
           className="flex items-center button text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500"
         >
-          Ver Línea de Tiempo de Eventos
+          Ver Línea de Tiempo
         </Link>
       </HeaderView>
 
